@@ -130,16 +130,18 @@
             var tbody = document.getElementById('resultsTable').getElementsByTagName('tbody')[0];
             tbody.innerHTML = "";
 
-            // Remove selection from all buttons
-            var allButtons = document.querySelectorAll("#inputTable button");
-                allButtons.forEach(function(btn) {
-                btn.classList.remove("selected");
-            });
-            // Toggle button state
             var buttonClass = button.className;
+            // Toggle button state
             if (buttonClass !== "reset") {
                 button.classList.toggle("selected");
                 updateResults();
+            }
+            else {
+                // Remove selection from all buttons
+                var allButtons = document.querySelectorAll("#inputTable button");
+                    allButtons.forEach(function(btn) {
+                    btn.classList.remove("selected");
+                });
             }
         }
 
