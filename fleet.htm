@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>實況野球艦高港口表</title>
+    <style>
+        table {
+            border-collapse: collapse;
+	    border: dashed;
+        }
+        th, td {
+	    width: 10%;
+            border: 3px solid #888888;
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .B { background-color: aqua; color: white; }
+        .R { background-color: red; color: white; }
+        .P { background-color: purple; color: white; }
+        .G { background-color: lime; color: white; }
+        .Y { background-color: yellow; color: black; }
+	input { width: 8%; }
+    </style>
+</head>
+<body>
+    <div id="readme" align="center">
+        <span>使用說明: 在每個練習內輸入所帶牌組役割顏色<br></span>
+        <span>如同個練習有多個役割顏色，用","分隔，不分大小寫<br></span>
+        <span>顏色: 綠色 (G), 藍色(B), 紫色(P), 紅色(R)<br></span>
+        <span>範例: 打擊:p,g  筋力:b  走壘:p 肩力:r 守備: 精神:g<br></span>
+    </div>
+    <div align="center">
+        <label for="input0">打擊</label>
+        <input type="text" id="input0" name="input0">
+        <label for="input1">筋力</label>
+        <input type="text" id="input1" name="input1">
+        <label for="input2">走壘</label>
+        <input type="text" id="input2" name="input2">
+	<br>
+        <label for="input3">肩力</label>
+        <input type="text" id="input3" name="input3">
+        <label for="input4">守備</label>
+        <input type="text" id="input4" name="input4">
+        <label for="input5">精神</label>
+        <input type="text" id="input5" name="input5">
+	<br>
+	<br>
+        <button onclick="updateResults()">確認輸入</button>
+	<br>
+	<br>
+    </div>
+    <table id="resultsTable" align="center">
+        <thead>
+            <tr>
+                <th>學校</th>
+                <th>打擊</th>
+                <th>筋力</th>
+                <th>走壘</th>
+                <th>肩力</th>
+                <th>守備</th>
+                <th>精神</th>
+                <th>結果</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <script>
+        var school_data = [
+            { "school": "霸堂", "characteristics": ["B", "R", "R", "P", "R", "G"], "counter": 0 },
+            { "school": "曉高", "characteristics": ["P", "G", "R", "R", "Y", "Y"], "counter": 0 },
+            { "school": "吸血", "characteristics": ["P", "B", "B", "G", "R", "Y"], "counter": 0 },
+            { "school": "天空", "characteristics": ["P", "B", "R", "P", "R", "P"], "counter": 0 },
+            { "school": "水產", "characteristics": ["B", "P", "R", "P", "R", "G"], "counter": 0 },
+            { "school": "機械", "characteristics": ["P", "G", "B", "R", "Y", "Y"], "counter": 0 },
+            { "school": "鳴響", "characteristics": ["P", "B", "R", "P", "Y", "Y"], "counter": 0 },
+            { "school": "圓桌", "characteristics": ["G", "G", "R", "P", "P", "P"], "counter": 0 },
+            { "school": "惠比留", "characteristics": ["P", "R", "B", "B", "R", "Y"], "counter": 0 },
+            { "school": "邊境", "characteristics": ["P", "B", "P", "R", "R", "G"], "counter": 0 },
+            { "school": "星雲", "characteristics": ["P", "G", "B", "R", "R", "G"], "counter": 0 },
+            { "school": "競技", "characteristics": ["G", "G", "G", "P", "R", "R"], "counter": 0 },
+            { "school": "花丸", "characteristics": ["P", "B", "G", "P", "R", "G"], "counter": 0 },
+            { "school": "討總", "characteristics": ["B", "P", "R", "P", "R", "Y"], "counter": 0 },
+            { "school": "埃及", "characteristics": ["G", "B", "P", "B", "R", "G"], "counter": 0 },
+            { "school": "金剛", "characteristics": ["G", "R", "B", "G", "R", "B"], "counter": 0 },
+            { "school": "天盟", "characteristics": ["B", "B", "R", "P", "R", "G"], "counter": 0 },
+            { "school": "大筒", "characteristics": ["P", "B", "R", "B", "P", "G"], "counter": 0 }
+        ];
+
+        function updateResults() {
+            // Reset counters
+            school_data.forEach(function(school) {
+                school.counter = 0;
+            });
+
+            // Get input values
+            var inputs = [];
+            for (var i = 0; i < 6; i++) {
+                inputs.push(document.getElementById('input' + i).value.toLowerCase().split(','));
+            }
+
+            // Update counters
+            school_data.forEach(function(school) {
+                for (var i = 0; i < 6; i++) {
+                    if (inputs[i].includes(school.characteristics[i].toLowerCase())) {
+                        school.counter++;
+                    }
+                }
+            });
+
+            // Sort school_data by counter descending
+            school_data.sort(function(a, b) {
+                return b.counter - a.counter;
+            });
+
+            // Update table
+            var tbody = document.getElementById('resultsTable').getElementsByTagName('tbody')[0];
+            tbody.innerHTML = ""; // Clear previous results
+            school_data.forEach(function(school) {
+                var row = tbody.insertRow();
+                var cell0 = row.insertCell(0);
+                var cell1 = row.insertCell(1);
+                var cell2 = row.insertCell(2);
+                var cell3 = row.insertCell(3);
+                var cell4 = row.insertCell(4);
+                var cell5 = row.insertCell(5);
+                var cell6 = row.insertCell(6);
+                var cell7 = row.insertCell(7);
+
+                cell0.innerHTML = school.school;
+                cell1.innerHTML = school.characteristics[0];
+                cell1.className = school.characteristics[0];
+                cell2.innerHTML = school.characteristics[1];
+                cell2.className = school.characteristics[1];
+                cell3.innerHTML = school.characteristics[2];
+                cell3.className = school.characteristics[2];
+                cell4.innerHTML = school.characteristics[3];
+                cell4.className = school.characteristics[3];
+                cell5.innerHTML = school.characteristics[4];
+                cell5.className = school.characteristics[4];
+                cell6.innerHTML = school.characteristics[5];
+                cell6.className = school.characteristics[5];
+                cell7.innerHTML = school.counter;
+            });
+        }
+
+        // Add event listeners to input fields
+        for (var i = 0; i < 6; i++) {
+            document.getElementById('input' + i).addEventListener('input', updateResults);
+        }
+    </script>
+</body>
+</html>
+
