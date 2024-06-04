@@ -3,57 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>實況野球艦高港口表</title>
+    <title>School Data Matching</title>
     <style>
         table {
+            width: 100%;
             border-collapse: collapse;
-	    border: dashed;
         }
         th, td {
-	    width: 10%;
-            border: 3px solid #888888;
-            padding: 10px;
+            border: 1px solid black;
+            padding: 8px;
             text-align: center;
         }
         th {
             background-color: #f2f2f2;
         }
-        .B { background-color: aqua; color: white; }
+        .B { background-color: blue; color: white; }
         .R { background-color: red; color: white; }
         .P { background-color: purple; color: white; }
-        .G { background-color: lime; color: white; }
+        .G { background-color: green; color: white; }
         .Y { background-color: yellow; color: black; }
-	input { width: 8%; }
+        .reset { background-color: maroon; color: white; border: 1px; content: "reset" }
+        button {
+            width: 90%;
+            height: 40px;
+            border: none;
+            font-size: 16px;
+        }
+        button.selected::after {
+            content: "✔";
+            font-size: 16px;
+            color: white;
+        }
     </style>
 </head>
 <body>
-    <div id="readme" align="center">
-        <span>使用說明: 在每個練習內輸入所帶牌組役割顏色<br></span>
-        <span>如同個練習有多個役割顏色，用","分隔，不分大小寫<br></span>
-        <span>顏色: 綠色 (G), 藍色(B), 紫色(P), 紅色(R)<br></span>
-        <span>範例: 打擊:p,g  筋力:b  走壘:p 肩力:r 守備: 精神:g<br></span>
-    </div>
-    <div align="center">
-        <label for="input0">打擊</label>
-        <input type="text" id="input0" name="input0">
-        <label for="input1">筋力</label>
-        <input type="text" id="input1" name="input1">
-        <label for="input2">走壘</label>
-        <input type="text" id="input2" name="input2">
-	<br>
-        <label for="input3">肩力</label>
-        <input type="text" id="input3" name="input3">
-        <label for="input4">守備</label>
-        <input type="text" id="input4" name="input4">
-        <label for="input5">精神</label>
-        <input type="text" id="input5" name="input5">
-	<br>
-	<br>
-        <button onclick="updateResults()">確認輸入</button>
-	<br>
-	<br>
-    </div>
-    <table id="resultsTable" align="center">
+    <div align="center">按照牌組練習與役割，點選表格內顏色按鈕。</div>
+    <table id="inputTable">
+        <tr>
+            <th><button class="reset" onclick="updateButton(this)">重置</button></th>
+            <th>打擊</th>
+            <th>筋力</th>
+            <th>走壘</th>
+            <th>肩力</th>
+            <th>守備</th>
+            <th>精神</th>
+        </tr>
+        <tr>
+            <td>綠</td>
+            <td><button class="G" onclick="updateButton(this)"></button></td>
+            <td><button class="G" onclick="updateButton(this)"></button></td>
+            <td><button class="G" onclick="updateButton(this)"></button></td>
+            <td><button class="G" onclick="updateButton(this)"></button></td>
+            <td><button class="G" onclick="updateButton(this)"></button></td>
+            <td><button class="G" onclick="updateButton(this)"></button></td>
+        </tr>
+        <tr>
+            <td>藍</td>
+            <td><button class="B" onclick="updateButton(this)"></button></td>
+            <td><button class="B" onclick="updateButton(this)"></button></td>
+            <td><button class="B" onclick="updateButton(this)"></button></td>
+            <td><button class="B" onclick="updateButton(this)"></button></td>
+            <td><button class="B" onclick="updateButton(this)"></button></td>
+            <td><button class="B" onclick="updateButton(this)"></button></td>
+        </tr>
+        <tr>
+            <td>紫</td>
+            <td><button class="P" onclick="updateButton(this)"></button></td>
+            <td><button class="P" onclick="updateButton(this)"></button></td>
+            <td><button class="P" onclick="updateButton(this)"></button></td>
+            <td><button class="P" onclick="updateButton(this)"></button></td>
+            <td><button class="P" onclick="updateButton(this)"></button></td>
+            <td><button class="P" onclick="updateButton(this)"></button></td>
+        </tr>
+        <tr>
+            <td>紅</td>
+            <td><button class="R" onclick="updateButton(this)"></button></td>
+            <td><button class="R" onclick="updateButton(this)"></button></td>
+            <td><button class="R" onclick="updateButton(this)"></button></td>
+            <td><button class="R" onclick="updateButton(this)"></button></td>
+            <td><button class="R" onclick="updateButton(this)"></button></td>
+            <td><button class="R" onclick="updateButton(this)"></button></td>
+        </tr>
+    </table>
+
+    <table id="resultsTable" >
         <thead>
             <tr>
                 <th>學校</th>
@@ -92,25 +125,49 @@
             { "school": "大筒", "characteristics": ["P", "B", "R", "B", "P", "G"], "counter": 0 }
         ];
 
+        function updateButton(button) {
+            // Clear previous results
+            var tbody = document.getElementById('resultsTable').getElementsByTagName('tbody')[0];
+            tbody.innerHTML = "";
+
+            // Remove selection from all buttons
+            var allButtons = document.querySelectorAll("#inputTable button");
+                allButtons.forEach(function(btn) {
+                btn.classList.remove("selected");
+            });
+            // Toggle button state
+            var buttonClass = button.className;
+            if (buttonClass !== "reset") {
+                button.classList.toggle("selected");
+                updateResults();
+            }
+        }
+
         function updateResults() {
             // Reset counters
             school_data.forEach(function(school) {
                 school.counter = 0;
             });
 
-            // Get input values
-            var inputs = [];
-            for (var i = 0; i < 6; i++) {
-                inputs.push(document.getElementById('input' + i).value.toLowerCase().split(','));
-            }
+            // Get selected values
+            var selectedValues = [[], [], [], [], [], []];
+            var buttons = document.querySelectorAll("#inputTable button.selected");
+            buttons.forEach(function(button) {
+                var buttonClass = button.className;
+                if (buttonClass !== "reset") {
+                    var col = button.parentNode.cellIndex - 1;
+                    var value = button.className.split(' ')[0];
+                    selectedValues[col].push(value.toUpperCase());
+                }
+            });
 
             // Update counters
             school_data.forEach(function(school) {
-                for (var i = 0; i < 6; i++) {
-                    if (inputs[i].includes(school.characteristics[i].toLowerCase())) {
+                school.characteristics.forEach(function(char, index) {
+                    if (selectedValues[index].includes(char)) {
                         school.counter++;
                     }
-                }
+                });
             });
 
             // Sort school_data by counter descending
@@ -147,11 +204,6 @@
                 cell6.className = school.characteristics[5];
                 cell7.innerHTML = school.counter;
             });
-        }
-
-        // Add event listeners to input fields
-        for (var i = 0; i < 6; i++) {
-            document.getElementById('input' + i).addEventListener('input', updateResults);
         }
     </script>
 </body>
