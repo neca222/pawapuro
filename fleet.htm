@@ -6,8 +6,10 @@
     <title>實況野球艦隊高校港口選擇表</title>
     <style>
         table {
-            width: 100%;
+            width: 80%;
+	    margin:auto;
             border-collapse: collapse;
+            table-layout: fixed;
         }
         th, td {
             border: 1px solid black;
@@ -22,12 +24,13 @@
         .P { background-color: purple; color: white; }
         .G { background-color: lime; color: white; }
         .Y { background-color: yellow; color: black; }
-        .reset { background-color: maroon; color: white; border: 1px; content: "reset" }
+        .reset { background-color: maroon; color: white; border: 1px; font-size: 12px;}
         button {
             width: 90%;
-            height: 40px;
+            height: 35px;
             border: none;
             font-size: 16px;
+            border-radius: 4px;
         }
         button.selected::after {
             content: "✔";
@@ -102,7 +105,6 @@
         <tbody>
         </tbody>
     </table>
-
     <script>
         var school_data = [
             { "school": "霸堂", "characteristics": ["B", "R", "R", "P", "R", "G"], "counter": 0 },
